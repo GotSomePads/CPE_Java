@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 
 public class CheckersGameNotPOO 
 {
+	private static JFrame frame;
+	private static JPanel mainPanel;
 	private static int windowHeight = 600;
 	private static int windowWidth = 600;
 	private static int nbCaseHeight = 10;
@@ -17,10 +19,10 @@ public class CheckersGameNotPOO
 	private static Color whiteColour = Color.WHITE;
 	private static Color whitePionColour = new Color(236, 240, 241);
 	
-	public static void main(String[] args)
+	public void init()
 	{
 		// 1) création de la frame dans laquelle le jeu se passera
-		JFrame frame = new JFrame();
+		frame = new JFrame();
 		frame.setTitle("No POO");
 		frame.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,14 +34,14 @@ public class CheckersGameNotPOO
 		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 		
 		// 1.3) setup du layout
-		JPanel mainPanel = new JPanel();
+		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(nbCaseHeight, nbCaseWidth));
 		mainPanel.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		frame.add(mainPanel);
 		
 		// 2) ajout des différents éléments visuels de jeu
-		setBackgroundCheckersBoard(nbCaseHeight, nbCaseWidth, mainPanel);
-		setPiecesCheckerBoard(mainPanel);
+		setBackgroundCheckersBoard(nbCaseHeight, nbCaseWidth);
+		setPiecesCheckerBoard();
 		
 		// finalement, lancer le rendu !
 		frame.setVisible(true);
@@ -47,11 +49,11 @@ public class CheckersGameNotPOO
 	
 	// ----------------------------------------------------------------------------------
 	// @brief
-	//  Crée un damier de taille 'h' par 'w' dans le JPanel 'p'
-	private static void setBackgroundCheckersBoard(int h, int w, JPanel p)
+	//  Crée un damier de taille 'h' par 'w' dans le main panel
+	private static void setBackgroundCheckersBoard(int h, int w)
 	{ 
-		int panelHeight = p.getHeight() / h;
-		int panelWidth = p.getWidth() / w;
+		int panelHeight = mainPanel.getHeight() / h;
+		int panelWidth = mainPanel.getWidth() / w;
 		
 		for(int i = 0 ; i < h ; i++){
 			for(int j = 0 ; j < w ; j++){
@@ -63,7 +65,7 @@ public class CheckersGameNotPOO
 				else
 					panel.setBackground(whiteColour);
 				
-				p.add(panel);
+				mainPanel.add(panel);
 			}
 		}
 	}
@@ -71,28 +73,26 @@ public class CheckersGameNotPOO
 	
 	// ----------------------------------------------------------------------------------
 	// @brief
-	//  Ajoute les pièce du jeu de dame dans le JPanel 'p'
-	private static void setPiecesCheckerBoard(JPanel p)
+	//  Ajoute les pièce du jeu de dame dans le main panel
+	private static void setPiecesCheckerBoard()
 	{
 		int pionHeight = (int) ((windowHeight / nbCaseHeight) * 0.75);
 		int pionWidth = (int) ((windowWidth / nbCaseWidth) * 0.75);
-		System.out.println("pion height : " + pionHeight);
 		
 		// fill pion du joueur black
 		for(int i = 0 ; i < 4 ; i++){
 			for(int j = 0 ; j < nbCaseWidth ; j++){
-				JPanel currentCase = (JPanel)(p.getComponent(i*10 + j));
+				JPanel currentCase = (JPanel)(mainPanel.getComponent(i*10 + j));
 				
 				if(currentCase.getBackground() == blackColour)
 					currentCase.add(createPion(pionWidth, pionHeight, blackPionColour));
 			}
 		}
 		
-		// fill pion du joueur bland
+		// fill pion du joueur blanc
 		for(int i = 0 ; i < 4 ; i++){
 			for(int j = 0 ; j < nbCaseWidth ; j++){
-				JPanel currentCase = (JPanel)(p.getComponent((nbCaseHeight-1-i)*10 + j));
-				log("adding to "+(int)((nbCaseHeight-1)*10 + j));
+				JPanel currentCase = (JPanel)(mainPanel.getComponent((nbCaseHeight-1-i)*10 + j));
 				
 				if(currentCase.getBackground() == blackColour)
 					currentCase.add(createPion(pionWidth, pionHeight, whitePionColour));
