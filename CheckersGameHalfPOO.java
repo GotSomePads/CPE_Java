@@ -2,14 +2,19 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class CheckersGameHalfPOO 
-{
-	private static JFrame frame;
-	private static JPanel checkersBoard;
+{		
+	// ---------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------
+	
+	private JFrame frame;
+	private JPanel checkersBoard;
 	private JPanel selectedPieceGUI;
 	
 	// sizes
@@ -24,6 +29,7 @@ public class CheckersGameHalfPOO
 	private static Color whiteColour = Color.WHITE;
 	private static Color whitePionColour = new Color(236, 240, 241);
 	
+	// ---------------------------------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------------------------------
 	
 	// Ctor
@@ -79,7 +85,7 @@ public class CheckersGameHalfPOO
 	// ----------------------------------------------------------------------------------
 	// @brief
 	//  Crée un damier de taille 'h' par 'w' dans le main panel
-	private static void setBackgroundCheckersBoard(int h, int w)
+	private void setBackgroundCheckersBoard(int h, int w)
 	{ 
 		int panelHeight = checkersBoard.getHeight() / h;
 		int panelWidth = checkersBoard.getWidth() / w;
@@ -103,7 +109,7 @@ public class CheckersGameHalfPOO
 	// ----------------------------------------------------------------------------------
 	// @brief
 	//  Ajoute les pièce du jeu de dame dans le main panel
-	private static void setPiecesCheckerBoard()
+	private void setPiecesCheckerBoard()
 	{
 		int pionHeight = (int) ((windowHeight / nbCaseHeight) * 0.75);
 		int pionWidth = (int) ((windowWidth / nbCaseWidth) * 0.75);
@@ -133,17 +139,56 @@ public class CheckersGameHalfPOO
 	// ----------------------------------------------------------------------------------
 	// @brief
 	//  Crée un pion de jeu de dames, de couleur 'colour'
-	private static JPanel createPion(int pionWidth, int pionHeight, Color colour)
+	private JPanel createPion(int pw, int ph, Color colour)
 	{
 		JPanel pion = new JPanel();
 		pion.setBackground(colour);
-		pion.setPreferredSize(new Dimension(pionWidth, pionHeight));
+		pion.setPreferredSize(new Dimension(pw, ph));
+		pion.addMouseListener(new PieceListener());
 		return pion;
 	}
 	
 	
 	// ----------------------------------------------------------------------------------
 	// @brief
+	//  Ajoute la pièce 'pion' sur la case de coordonnées (i, j)
+	private void addPieceOnSquare(JPanel pion, int i, int j)
+	{
+		JPanel currentCase = (JPanel)(checkersBoard.getComponent(i*10 + j));
+		currentCase.add(pion);
+	}
+	
+	
+	// ----------------------------------------------------------------------------------
+	// @brief
+	//  Setter de l'attribute 'selectedPieceGUI'
+	private void setSelectedPiece(JPanel pieceGUI) { this.selectedPieceGUI = pieceGUI; }
+	
+	
+	// ----------------------------------------------------------------------------------
+	// @brief
 	//  Easy debug boii
-	private static void log(String text) { System.out.println(text); }
+	private void log(String text) { System.out.println(text); }
+	
+	
+	// ---------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------
+	// @brief
+	//  Classe s'occupant de la gestion d'un clic sur une pièce
+	class PieceListener implements MouseListener{
+		@Override
+		public void mouseClicked(MouseEvent event) { setSelectedPiece((JPanel) event.getSource()); }
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) { }
+
+		@Override
+		public void mouseExited(MouseEvent arg0) { }
+
+		@Override
+		public void mousePressed(MouseEvent arg0) { }
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) { }
+	}
 }
