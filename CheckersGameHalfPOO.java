@@ -90,10 +90,13 @@ public class CheckersGameHalfPOO
 		int panelHeight = checkersBoard.getHeight() / h;
 		int panelWidth = checkersBoard.getWidth() / w;
 		
+		JPanel panel;
+		CaseListener listener = new CaseListener();
 		for(int i = 0 ; i < h ; i++){
 			for(int j = 0 ; j < w ; j++){
-				JPanel panel = new JPanel();
+				panel = new JPanel();
 				panel.setPreferredSize(new Dimension(panelHeight, panelWidth));
+				panel.addMouseListener(listener);
 				
 				if((j+i) % 2 == 1)
 					panel.setBackground(blackColour);
@@ -151,11 +154,25 @@ public class CheckersGameHalfPOO
 	
 	// ----------------------------------------------------------------------------------
 	// @brief
-	//  Ajoute la pièce 'pion' sur la case de coordonnées (i, j)
-	private void addPieceOnSquare(JPanel pion, int i, int j)
+	//  Ajoute la pièce 'pion' sur la case 'destination'
+	private void addPieceOnSquare(JPanel pion, JPanel destination) { destination.add(pion); }
+	
+	
+	// ----------------------------------------------------------------------------------
+	// @brief
+	//  Bouge la pièce 'pion'
+	private void movePiece(JPanel pion, JPanel destination)
 	{
-		JPanel currentCase = (JPanel)(checkersBoard.getComponent(i*10 + j));
-		currentCase.add(pion);
+		// si la destination se trouve en diagonale de la pièce, alors on la bouge
+		// ...
+		
+		JPanel caseDepart = (JPanel) pion.getParent();
+		this.addPieceOnSquare(pion, destination);
+		
+		// repaint panels
+		caseDepart.revalidate();
+		caseDepart.repaint();
+		destination.repaint();
 	}
 	
 	
@@ -163,6 +180,11 @@ public class CheckersGameHalfPOO
 	// @brief
 	//  Setter de l'attribute 'selectedPieceGUI'
 	private void setSelectedPiece(JPanel pieceGUI) { this.selectedPieceGUI = pieceGUI; }
+	
+	// ----------------------------------------------------------------------------------
+	// @brief
+	//  Getter de l'attribute 'selectedPieceGUI'
+	public JPanel getSelectedPiece() { return this.selectedPieceGUI; }
 	
 	
 	// ----------------------------------------------------------------------------------
@@ -178,6 +200,36 @@ public class CheckersGameHalfPOO
 	class PieceListener implements MouseListener{
 		@Override
 		public void mouseClicked(MouseEvent event) { setSelectedPiece((JPanel) event.getSource()); }
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) { }
+
+		@Override
+		public void mouseExited(MouseEvent arg0) { }
+
+		@Override
+		public void mousePressed(MouseEvent arg0) { }
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) { }
+	}
+	
+	
+	// ---------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------
+	// @brief
+	//  Classe s'occupant de la gestion d'un clic sur une case
+	class CaseListener implements MouseListener{
+		@Override
+		public void mouseClicked(MouseEvent event) 
+		{
+			// on ne peut déplacer dans une case que si celle-ci est vide
+			JPanel p = (JPanel) event.getSource();
+			if(p.getComponentCount() == 0 && getSelectedPiece() != null){
+				movePiece(getSelectedPiece(), p);
+				setSelectedPiece(null);
+			}
+		}
 
 		@Override
 		public void mouseEntered(MouseEvent arg0) { }
